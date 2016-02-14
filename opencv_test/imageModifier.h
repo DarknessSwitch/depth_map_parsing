@@ -13,6 +13,6 @@ class imageModifier
 public:
 	imageModifier(void);
 	~imageModifier(void);
-	static cv::Mat convertToGreyscale(vector<vector<double>> depthMap);
+	static cv::Mat convertToGreyscale(vector<vector<double>>, double);
 };
 

@@ -19,11 +19,11 @@ int main( int argc, char** argv )
 	string filename = argv[1];
 	vector<vector<double>> depthMap = inputHandler::readInputFile(filename);
 
-	Mat greyscaleImage = imageModifier::convertToGreyscale(depthMap);
-	imwrite("greyscale.jpg", greyscaleImage);
+	Mat greyscaleImage = imageModifier::convertToGreyscale(depthMap, inputHandler::furthestPoint);
+	imwrite("greyscale.jpg", greyscaleImage);// greyscale is saved to the project's folder
 	namedWindow("Greyscale image", WINDOW_AUTOSIZE);
 	imshow("Greyscale image", greyscaleImage);
 	
-    waitKey(0); // Wait for a keystroke in the window
+    waitKey(0); 
     return 0;
 }
