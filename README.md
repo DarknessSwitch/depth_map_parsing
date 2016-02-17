@@ -6,4 +6,4 @@ specify input file's name as command line argument.
 
 input file should contain 2-dimensional array of numbers separated with whitespaces.
 
-greyscale image is saved to the project's file.
+greyscale image is saved to the project's folder.
