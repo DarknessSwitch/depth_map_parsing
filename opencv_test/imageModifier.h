@@ -7,12 +7,16 @@
 #include <vector>
 
 using namespace std;
+using namespace cv;
 
 class imageModifier
 {
 public:
 	imageModifier(void);
 	~imageModifier(void);
-	static cv::Mat convertToGreyscale(vector<vector<double>>, double);
+	static Mat convertToGreyscale(vector<vector<double>> depthMap, double furthestPoint);
+	static Mat convertToRGB(vector<vector<double>> depthMap, double furthestPoint, double closestPoint);
+	static Mat imposeEdges(Mat input);
+	static Mat convertToMat(vector<vector<double>>);
 };
 

@@ -14,4 +14,5 @@ public:
 	static vector<double> parseLineOfDoubles(string line);
 	static vector<vector<double>> readInputFile(string filename);
 	static double furthestPoint;
+	static double closestPoint;
 };

@@ -1,10 +1,11 @@
 #include "inputHandler.h"
 
 double inputHandler::furthestPoint;
-
+double inputHandler::closestPoint;
 inputHandler::inputHandler()
 {
-	inputHandler::furthestPoint = 255;
+	inputHandler::furthestPoint = 0;
+	inputHandler::closestPoint = 20000;
 }
 
 // the function only expects a line of doubles separated with whitespaces, has no argument validation 
@@ -18,6 +19,7 @@ vector<double> inputHandler::parseLineOfDoubles (string line)
 	{
 		tmp = stod(line.substr(pos, spacePosition));
 		inputHandler::furthestPoint = max(tmp, inputHandler::furthestPoint);
+		inputHandler::closestPoint = min(tmp, inputHandler::closestPoint);
 		result.push_back(tmp);
 
 		pos = spacePosition+1;		
