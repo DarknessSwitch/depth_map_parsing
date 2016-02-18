@@ -22,33 +22,68 @@ Mat imageModifier::convertToGreyscale(vector<vector<double>> depthMap, double ma
 Mat imageModifier::convertToRGB(vector<vector<double>> depthMap, double maxPoint, double minPoint)
 {
 	Mat result(depthMap.size(), depthMap[0].size(), CV_8UC3);
+	double closeBorder = minPoint + (maxPoint - minPoint)/3;
+	double farBorder = maxPoint - (maxPoint - minPoint)/3;
+	double mid = maxPoint - (maxPoint - minPoint)/2;
 	for(int i = 0; i < result.rows; i++)
 	{
 		Vec3b* p = result.ptr<Vec3b>(i);
 		for(int j = 0; j < result.cols; j++)
 			{
+				double depth = depthMap[i][j];
 				Vec3b &pixel = p[j];
-				pixel[0] = (maxPoint - depthMap[i][j]+1)*255/maxPoint;
-				pixel[1] = depthMap[i][j]*255/maxPoint;;
-				pixel[2] = (depthMap[i][j] - minPoint+1)*255/maxPoint;
+				/*if(depth < closeBorder)
+				{
+					pixel[0] = depth*(closeBorder-minPoint)/(maxPoint-minPoint) * 255 / maxPoint;
+					pixel[1] = (depth - minPoint) * 255 / maxPoint;
+					pixel[2] = (depth - minPoint)/2 * 255 / maxPoint;
+				}
+				else if(depth>= closeBorder && depth < farBorder)
+				{
+					pixel[0] = depth * 255 / (closeBorder - minPoint);
+					pixel[1] = depth * 255 / maxPoint;
+					pixel[2] = (depth - minPoint)/2 * 255 / maxPoint;
+				}
+				else
+				{
+					pixel[0] = (maxPoint - depth)/2 * 255 / maxPoint;		
+					pixel[1] = (maxPoint - depth) * 255 / maxPoint;
+					pixel[2] = depth*(maxPoint-farBorder)/(maxPoint-minPoint) * 255 / maxPoint;					
+				}*/
+				if(depth < mid)
+				{
+					pixel[0] = depth*(mid-minPoint)/(maxPoint-minPoint) * 255 / maxPoint;
+					pixel[1] = (mid - depth) * 255 / maxPoint;
+					pixel[2] = (mid - depth)/2 * 255 / maxPoint;
+				}
+				else
+				{
+					pixel[0] = (depth - mid)/2 * 255 / maxPoint;
+					pixel[1] = (depth - mid) * 255 / maxPoint;
+					pixel[2] = depth*(maxPoint - mid)/(maxPoint-minPoint) * 255 / maxPoint;
+				}
 			}
 	}
 	return result;
 }
 
-/* //todo
-Mat imageModifier::imposeEdges(Mat input)
+ 
+ //todo
+Mat imageModifier::imposeEdges(Mat input, int lowThresh, int highThresh)
 {
 	Mat result;
-	//cvtColor(input, input, CV_BGR2GRAY);
+	if(input.channels() > 1)
+	{ 
+		cvtColor(input, input, CV_BGR2GRAY);
+	}
+	//blur(input, input, Size(3,3));
 	result = Scalar::all(0);
-	//blur(edges, edges, Size(3,3));
-	//Canny(input, input, 10, 30);	
-	//cornerHarris(input, input, 2, 3, 0.04); 
+	Canny(input, input, lowThresh, highThresh, 5, false);	
 	input.copyTo(result);
 	return result;
 }
 
+/*
 //todo?
 Mat imageModifier::convertToMat(vector<vector<double>> depthMap)
 {

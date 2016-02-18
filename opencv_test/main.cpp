@@ -21,7 +21,9 @@ int main( int argc, char** argv )
 
 	vector<vector<double>> depthMap = inputHandler::readInputFile(filePath);
 	Mat greyscaleImage = imageModifier::convertToRGB(depthMap, inputHandler::furthestPoint, inputHandler::closestPoint);
+	//Mat greyscaleImage = imageModifier::convertToGreyscale(depthMap, inputHandler::furthestPoint);
 	imwrite(filename, greyscaleImage);// greyscale is saved to the project's folder
+	greyscaleImage = imageModifier::imposeEdges(greyscaleImage, 49, 147);
 	namedWindow("Greyscale image", WINDOW_AUTOSIZE);
 	imshow("Greyscale image", greyscaleImage);
 	
