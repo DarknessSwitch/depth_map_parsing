@@ -19,30 +19,33 @@ Mat imageModifier::convertToGreyscale(vector<vector<double>> depthMap, double ma
 }
 
 // todo
-Mat imageModifier::convertToRGB(vector<vector<double>> depthMap, double maxPoint, double minPoint)
+Mat imageModifier::convertToRGB(vector<vector<double>> depthMap, int stepRatio)
 {
 
-	int dir[2][8] = {{1,1,0,-1,-1,-1,0,1},{0,1,1,1,0,-1,-1,-1}};
+	int dir[2][8] = {{0,1,1,1,0,-1,-1,-1},{1,1,0,-1,-1,-1,0,1}};
 
 	Mat result(depthMap.size(), depthMap[0].size(), CV_8UC3, Scalar(255,255,255));
 
-	for(int i = 1; i < result.rows-1; i++)
+	for(int i = 0; i < result.rows; i++)
 	{
 		Vec3b* p = result.ptr<Vec3b>(i);
-		for(int j = 1; j < result.cols-1; j++)
+		for(int j = 0; j < result.cols; j++)
 			{
 				Vec3b &pixel = p[j];
 				double maxDelta = 0;
-				int dirIndx = 0;
+				int dirIndx = 0, y, x;
 				double depth = depthMap[i][j];
 				
 				for(int k = 0; k < 8; k++)
 				{
-					if( abs(depth - depthMap[i+dir[0][k]][j+dir[1][k]]) > maxDelta)
-					{
-						maxDelta = abs(depth - depthMap[i+dir[0][k]][j+dir[1][k]]);
-						dirIndx = k;
-					}					
+					y = i+dir[0][k]*stepRatio;
+					x = j+dir[1][k]*stepRatio;
+					if(x >= 0 && x < result.cols && y >= 0 && y < result.rows)
+						if( abs(depth - depthMap[y][x]) > maxDelta)
+						{
+							maxDelta = abs(depth - depthMap[y][x]);
+							dirIndx = k;
+						}					
 				}
 				pixel = paintPixel(dirIndx);
 			}
@@ -59,9 +62,9 @@ Mat imageModifier::imposeEdges(Mat input, int lowThresh, int highThresh)
 	{ 
 		cvtColor(input, input, CV_BGR2GRAY);
 	}
-	//blur(input, input, Size(3,3));
+	blur(input, input, Size(3,3));
 	result = Scalar::all(0);
-	Canny(input, input, lowThresh, highThresh, 5, false);	
+	Canny(input, input, lowThresh, highThresh);	
 	input.copyTo(result);
 	return result;
 }
@@ -89,35 +92,35 @@ Vec3b imageModifier::paintPixel(int direction)
 	switch(direction)
 	{
 		case 0:
-			result[0] = 0; result[1] = 0; result[2] = 255; // WEST, RED
+			result[0] = 0; result[1] = 100; result[2] = 0; // WEST
 		break;
 
 		case 1:
-			result[0] = 255; result[1] = 0; result[2] = 205; // NORTH-WEST, VIOLET
+			result[0] = 25; result[1] = 50; result[2] = 0; // NORTH-WEST
 		break;
 
 		case 2:
-			result[0] = 255; result[1] = 25; result[2] = 0; // NORTH, BLUE
+			result[0] = 0; result[1] = 0; result[2] = 0; // NORTH
 		break;
 
 		case 3:
-			result[0] = 255; result[1] = 188; result[2] = 0; //NORTH-EAST, LIGHT-BLUE
+			result[0] = 50; result[1] = 25; result[2] = 0; //NORTH-EAST
 		break;
 			
 		case 4:
-			result[0] = 154; result[1] = 255; result[2] = 0; //EAST, LIGHT-GREEN
+			result[0] = 0; result[1] = 100; result[2] = 0; //EAST
 		break;
 
 		case 5:
-			result[0] = 11; result[1] = 170; result[2] = 11; // SOUTH-EAST, GREEN
+			result[0] = 50; result[1] = 25; result[2] = 255; // SOUTH-EAST
 		break;
 
 		case 6:
-			result[0] = 18; result[1] = 255; result[2] = 243; // SOUTH, YELLOW
+			result[0] = 75; result[1] = 75; result[2] = 255; // SOUTH
 		break;
 
 		case 7:
-			result[0] = 20; result[1] = 115; result[2] = 239; // SOUTH-WEST, ORANGE
+			result[0] = 25; result[1] = 50; result[2] = 255; // SOUTH-WEST
 		break;
 
 		default:
