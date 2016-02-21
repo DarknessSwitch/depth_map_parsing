@@ -11,6 +11,8 @@ using namespace cv;
 
 class imageModifier
 {
+private:
+	static Vec3b paintPixel(int direction);
 public:
 	imageModifier(void);
 	~imageModifier(void);

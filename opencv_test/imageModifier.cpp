@@ -21,47 +21,30 @@ Mat imageModifier::convertToGreyscale(vector<vector<double>> depthMap, double ma
 // todo
 Mat imageModifier::convertToRGB(vector<vector<double>> depthMap, double maxPoint, double minPoint)
 {
-	Mat result(depthMap.size(), depthMap[0].size(), CV_8UC3);
-	double closeBorder = minPoint + (maxPoint - minPoint)/3;
-	double farBorder = maxPoint - (maxPoint - minPoint)/3;
-	double mid = maxPoint - (maxPoint - minPoint)/2;
-	for(int i = 0; i < result.rows; i++)
+
+	int dir[2][8] = {{1,1,0,-1,-1,-1,0,1},{0,1,1,1,0,-1,-1,-1}};
+
+	Mat result(depthMap.size(), depthMap[0].size(), CV_8UC3, Scalar(255,255,255));
+
+	for(int i = 1; i < result.rows-1; i++)
 	{
 		Vec3b* p = result.ptr<Vec3b>(i);
-		for(int j = 0; j < result.cols; j++)
+		for(int j = 1; j < result.cols-1; j++)
 			{
-				double depth = depthMap[i][j];
 				Vec3b &pixel = p[j];
-				/*if(depth < closeBorder)
+				double maxDelta = 0;
+				int dirIndx = 0;
+				double depth = depthMap[i][j];
+				
+				for(int k = 0; k < 8; k++)
 				{
-					pixel[0] = depth*(closeBorder-minPoint)/(maxPoint-minPoint) * 255 / maxPoint;
-					pixel[1] = (depth - minPoint) * 255 / maxPoint;
-					pixel[2] = (depth - minPoint)/2 * 255 / maxPoint;
+					if( abs(depth - depthMap[i+dir[0][k]][j+dir[1][k]]) > maxDelta)
+					{
+						maxDelta = abs(depth - depthMap[i+dir[0][k]][j+dir[1][k]]);
+						dirIndx = k;
+					}					
 				}
-				else if(depth>= closeBorder && depth < farBorder)
-				{
-					pixel[0] = depth * 255 / (closeBorder - minPoint);
-					pixel[1] = depth * 255 / maxPoint;
-					pixel[2] = (depth - minPoint)/2 * 255 / maxPoint;
-				}
-				else
-				{
-					pixel[0] = (maxPoint - depth)/2 * 255 / maxPoint;		
-					pixel[1] = (maxPoint - depth) * 255 / maxPoint;
-					pixel[2] = depth*(maxPoint-farBorder)/(maxPoint-minPoint) * 255 / maxPoint;					
-				}*/
-				if(depth < mid)
-				{
-					pixel[0] = depth*(mid-minPoint)/(maxPoint-minPoint) * 255 / maxPoint;
-					pixel[1] = (mid - depth) * 255 / maxPoint;
-					pixel[2] = (mid - depth)/2 * 255 / maxPoint;
-				}
-				else
-				{
-					pixel[0] = (depth - mid)/2 * 255 / maxPoint;
-					pixel[1] = (depth - mid) * 255 / maxPoint;
-					pixel[2] = depth*(maxPoint - mid)/(maxPoint-minPoint) * 255 / maxPoint;
-				}
+				pixel = paintPixel(dirIndx);
 			}
 	}
 	return result;
@@ -99,3 +82,46 @@ Mat imageModifier::convertToMat(vector<vector<double>> depthMap)
 	}
 	return result;
 }*/
+
+Vec3b imageModifier::paintPixel(int direction)
+{
+	Vec3b result;
+	switch(direction)
+	{
+		case 0:
+			result[0] = 0; result[1] = 0; result[2] = 255; // WEST, RED
+		break;
+
+		case 1:
+			result[0] = 255; result[1] = 0; result[2] = 205; // NORTH-WEST, VIOLET
+		break;
+
+		case 2:
+			result[0] = 255; result[1] = 25; result[2] = 0; // NORTH, BLUE
+		break;
+
+		case 3:
+			result[0] = 255; result[1] = 188; result[2] = 0; //NORTH-EAST, LIGHT-BLUE
+		break;
+			
+		case 4:
+			result[0] = 154; result[1] = 255; result[2] = 0; //EAST, LIGHT-GREEN
+		break;
+
+		case 5:
+			result[0] = 11; result[1] = 170; result[2] = 11; // SOUTH-EAST, GREEN
+		break;
+
+		case 6:
+			result[0] = 18; result[1] = 255; result[2] = 243; // SOUTH, YELLOW
+		break;
+
+		case 7:
+			result[0] = 20; result[1] = 115; result[2] = 239; // SOUTH-WEST, ORANGE
+		break;
+
+		default:
+			result[0] = 255; result[1] = 255; result[2] = 255;
+	}
+	return result;
+}
