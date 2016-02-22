@@ -1,11 +1,10 @@
-﻿Build started 21.02.2016 19:42:11.
+﻿Build started 22.02.2016 15:18:59.
      1>Project "C:\Projects\road_recognition\opencv_testing\opencv_test\opencv_test\opencv_test.vcxproj" on node 2 (Build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\opencv_test.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         C:\Program Files\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IC:\opencv\build\x86\vc11\..\..\include /IC:\Projects\road_recognition\opencv_testing\opencv_test\opencv_test\ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt imageModifier.cpp
-         imageModifier.cpp
-     1>c:\projects\road_recognition\opencv_testing\opencv_test\opencv_test\imagemodifier.cpp(14): warning C4244: 'initializing' : conversion from 'double' to 'uchar', possible loss of data
+         C:\Program Files\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IC:\opencv\build\x86\vc11\..\..\include /IC:\Projects\road_recognition\opencv_testing\opencv_test\opencv_test\ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
        Link:
          C:\Program Files\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Projects\road_recognition\opencv_testing\opencv_test\Debug\opencv_test.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\opencv\build\x86\vc11\lib opencv_ts300d.lib opencv_world300d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Projects\road_recognition\opencv_testing\opencv_test\Debug\opencv_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Projects\road_recognition\opencv_testing\opencv_test\Debug\opencv_test.lib" /MACHINE:X86 Debug\imageModifier.obj
          Debug\inputHandler.obj
@@ -18,4 +17,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:29.34
+Time Elapsed 00:00:09.21

@@ -9,7 +9,9 @@
 using namespace cv;
 using namespace std;
 
-int ratio = 1;
+int ratio = 15;
+int treshold = 1;
+int edgesLowTres = 137;
 string window_name = "Parsed depth map";
 vector<vector<double>> depthMap;
 string filePath;
@@ -18,11 +20,11 @@ Mat image;
 
 void stepRatio(int, void*)
 {
-  image = imageModifier::convertToRGB(depthMap, ratio);
-  imshow( window_name, image );
-  // on each trackbar change parsed image and image with edges are saved to the project's folder
-  imwrite(filename, image);
-  imwrite("edges_"+filename, imageModifier::imposeEdges(image, 120, 360));
+	image = imageModifier::convertToRGB(depthMap, ratio, treshold);
+	imshow( window_name, image );
+	// on each trackbar change parsed image and image with edges are saved to the project's folder
+	imwrite(filename, image);
+	imwrite("edges_"+filename, imageModifier::imposeEdges(image, edgesLowTres, edgesLowTres*3));
 }
 
 int main( int argc, char** argv )
@@ -38,7 +40,7 @@ int main( int argc, char** argv )
 	depthMap = inputHandler::readInputFile(filePath);
 
 	namedWindow(window_name, WINDOW_AUTOSIZE);
-	createTrackbar( "Pixel step distance:", window_name, &ratio, 150, stepRatio );
+	createTrackbar( "Pixel step distance:", window_name, &treshold, 1000, stepRatio );
 	stepRatio(1,0); // initial creation of window with image
 	
     waitKey(0); 

@@ -19,7 +19,7 @@ Mat imageModifier::convertToGreyscale(vector<vector<double>> depthMap, double ma
 }
 
 // todo
-Mat imageModifier::convertToRGB(vector<vector<double>> depthMap, int stepRatio)
+Mat imageModifier::convertToRGB(vector<vector<double>> depthMap, int stepRatio, double minDelta)
 {
 
 	int dir[2][8] = {{0,1,1,1,0,-1,-1,-1},{1,1,0,-1,-1,-1,0,1}};
@@ -33,7 +33,7 @@ Mat imageModifier::convertToRGB(vector<vector<double>> depthMap, int stepRatio)
 			{
 				Vec3b &pixel = p[j];
 				double maxDelta = 0;
-				int dirIndx = 0, y, x;
+				int dirIndx = -1, y, x;
 				double depth = depthMap[i][j];
 				
 				for(int k = 0; k < 8; k++)
@@ -41,7 +41,7 @@ Mat imageModifier::convertToRGB(vector<vector<double>> depthMap, int stepRatio)
 					y = i+dir[0][k]*stepRatio;
 					x = j+dir[1][k]*stepRatio;
 					if(x >= 0 && x < result.cols && y >= 0 && y < result.rows)
-						if( abs(depth - depthMap[y][x]) > maxDelta)
+						if( abs(depth - depthMap[y][x]) > minDelta && abs(depth - depthMap[y][x]) > maxDelta)
 						{
 							maxDelta = abs(depth - depthMap[y][x]);
 							dirIndx = k;
@@ -91,6 +91,10 @@ Vec3b imageModifier::paintPixel(int direction)
 	Vec3b result;
 	switch(direction)
 	{
+		case -1:
+			result[0] = 50; result[1] = 50; result[2] = 50; //below threshold
+		break;
+
 		case 0:
 			result[0] = 0; result[1] = 100; result[2] = 0; // WEST
 		break;
