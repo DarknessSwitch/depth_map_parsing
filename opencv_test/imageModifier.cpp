@@ -18,7 +18,6 @@ Mat imageModifier::convertToGreyscale(vector<vector<double>> depthMap, double ma
 	return result;
 }
 
-// todo
 Mat imageModifier::convertToRGB(vector<vector<double>> depthMap, int stepRatio, double minDelta)
 {
 
@@ -53,8 +52,6 @@ Mat imageModifier::convertToRGB(vector<vector<double>> depthMap, int stepRatio, 
 	return result;
 }
 
- 
- //todo
 Mat imageModifier::imposeEdges(Mat input, int lowThresh, int highThresh)
 {
 	Mat result;
@@ -69,22 +66,37 @@ Mat imageModifier::imposeEdges(Mat input, int lowThresh, int highThresh)
 	return result;
 }
 
-/*
-//todo?
-Mat imageModifier::convertToMat(vector<vector<double>> depthMap)
+Mat imageModifier::detectGroundSurface(Mat edges)
 {
-	Mat result(depthMap.size(), depthMap[0].size(), CV_64FC1);
-	for(int i = 0; i < result.rows; i++)
+	Mat result(edges.rows, edges.cols, CV_8UC1, Scalar(0));
+	vector<pair<int,int>> coords;
+
+	for(int i = 0; i < edges.rows; i++)
 	{
-		double* p = result.ptr<double>(i);
-		for(int j = 0; j < result.cols; j++)
+		for(int j = 0; j < edges.cols; j++)
+		{
+			if(edges.ptr<uchar>(i)[j]==255)
 			{
-				double pixel = depthMap[i][j];
-				p[j] = pixel;
+				vector<pair<int, int>> tmp;
+				//iterating through surrounding pixels to find all pixels belonging to this edge. maybe similar to dfs
+				dfs(i,j,tmp,edges); 		
+				if(tmp.size()>coords.size()) 
+					coords = tmp;						
 			}
+		}
+	}
+
+	// painting white the ground surface region 
+	for(int i = 0; i < coords.size(); i++)
+	{
+		for(int j = coords[i].first; j<result.rows; j++)
+		{
+			result.ptr<uchar>(j)[coords[i].second] = 255;
+			//result.ptr<uchar>(coords[i].first)[coords[i].second] = 255;
+		}
 	}
 	return result;
-}*/
+}
 
 Vec3b imageModifier::paintPixel(int direction)
 {
@@ -131,4 +143,19 @@ Vec3b imageModifier::paintPixel(int direction)
 			result[0] = 255; result[1] = 255; result[2] = 255;
 	}
 	return result;
+}
+
+void imageModifier::dfs(int y, int x, vector<pair<int,int>> &coord, Mat &edges)
+{
+	int dir[2][8] = {{0,1,1,1,0,-1,-1,-1},{1,1,0,-1,-1,-1,0,1}};
+	coord.push_back(make_pair(y,x));
+	edges.ptr<uchar>(y)[x] = 0;
+	for(int k = 0; k < 8; k++)
+	{
+		if(x+dir[1][k] >= 0 && x+dir[1][k] < edges.cols && y+dir[0][k] >= 0 && y+dir[0][k] < edges.rows)
+			if(edges.ptr<uchar>(y+dir[0][k])[x+dir[1][k]]==255)
+			{
+				dfs(y+dir[0][k],x+dir[1][k], coord, edges);
+			}
+	}
 }

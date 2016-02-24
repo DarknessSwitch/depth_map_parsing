@@ -10,7 +10,7 @@ using namespace cv;
 using namespace std;
 
 int ratio = 15;
-int treshold = 1;
+int treshold = 600;
 int edgesLowTres = 137;
 string window_name = "Parsed depth map";
 vector<vector<double>> depthMap;
@@ -38,10 +38,14 @@ int main( int argc, char** argv )
 	filename = filePath.substr(filePath.find_last_of('\\')+1); filename = filename.erase(filename.find_last_of('.'))+".jpg";
 
 	depthMap = inputHandler::readInputFile(filePath);
-
-	namedWindow(window_name, WINDOW_AUTOSIZE);
-	createTrackbar( "Pixel step distance:", window_name, &treshold, 1000, stepRatio );
-	stepRatio(1,0); // initial creation of window with image
+	Mat edges = imageModifier::imposeEdges(imageModifier::convertToRGB(depthMap, ratio, treshold), edgesLowTres, edgesLowTres*3 );
+	Mat detectedRegion = imageModifier::detectGroundSurface(edges);
+	imwrite("ground_surface_of_"+filename, detectedRegion);
+	namedWindow("Detected", WINDOW_AUTOSIZE);
+	imshow("Detected", detectedRegion);
+	//namedWindow(window_name, WINDOW_AUTOSIZE);
+	//createTrackbar( "Pixel step distance:", window_name, &treshold, 1000, stepRatio );
+	//stepRatio(1,0); // initial creation of window with image
 	
     waitKey(0); 
     return 0;

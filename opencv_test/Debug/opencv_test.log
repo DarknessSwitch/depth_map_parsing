@@ -1,4 +1,4 @@
-﻿Build started 22.02.2016 15:18:59.
+﻿Build started 25.02.2016 0:35:37.
      1>Project "C:\Projects\road_recognition\opencv_testing\opencv_test\opencv_test\opencv_test.vcxproj" on node 2 (Build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\opencv_test.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -17,4 +17,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:09.21
+Time Elapsed 00:00:02.74
